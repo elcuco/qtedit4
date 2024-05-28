@@ -1,0 +1,77 @@
+# Copyright (c) 2019-2020-2021 Luca Cappa
+# Released under the term specified in file LICENSE.txt
+# SPDX short identifier: MIT
+name: Build and test
+on:
+  push:
+    braches : ["main", "new-feature-github-actions"]
+
+jobs:
+  build-cmake:
+    name: Build ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+      # see https://gist.github.com/NickNaso/0d478f1481686d5bcc868cac06620a60
+    strategy:
+      fail-fast: false
+      matrix:
+        config: 
+        - {
+            name: "Windows MSVC",
+            build_dir: "windows-msvc",
+            os: windows-latest,
+            build_type: "Release",
+            cc: "cl",
+            cxx: "cl",
+            generators: "Ninja"
+          }
+        - {
+            name: "Windows MinGW",
+            build_dir: "windows-mingw",
+            os: windows-latest,
+            build_type: "Release",
+            cc: "gcc",
+            cxx: "g++",
+            generators: "Ninja"
+          }
+        - {
+            name: "Ubuntu GCC",
+            build_dir: "ubungu-gcc",
+            os: ubuntu-22.04,
+            build_type: "Release",
+            cc: "gcc",
+            cxx: "g++",
+            generators: "Ninja"
+          }
+        - {
+            name: "Ubuntu Clang",
+            build_dir: "ubuntu-clang",
+            os: ubuntu-22.04,
+            build_type: "Release",
+            cc: "clang",
+            cxx: "clang++",
+            generators: "Ninja"
+          }
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lukka/get-cmake@latest
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install conan
+        run: pip3 install conan==1.61.0
+      - name: Install cmake-format
+        run: pip3 install cmake-format
+      - name: Setup MSVC (optional)
+        if: ${{ matrix.config.cxx == 'cl' }}
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Confiure 
+        id: runcmake
+        run: |
+          cmake -S ${{ github.workspace }} -B "${{ runner.workspace }}/build/${{ runner.config.build_dir }}" -G "${{ matrix.config.generators }}" -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+      - name: Build
+        id: runcmakebuild
+        run: |
+          cmake --build ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --parallel --verbose
+      - name: Run tests
+        run : '${{ runner.workspace }}/build/${{ runner.config.build_dir }}/bin/test-buttons'
