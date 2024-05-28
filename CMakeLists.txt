@@ -63,6 +63,12 @@ target_include_directories( qtedit4 PUBLIC
 
 target_link_libraries(qtedit4 qmdilib qsvte qsvsh )
 
+if(MSVC)
+  target_compile_options(qtedit4 PRIVATE /W4)
+else()
+  target_compile_options(qtedit4 PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 ######################
 
 add_executable(generic-item-complete
@@ -75,3 +81,4 @@ target_include_directories(generic-item-complete PUBLIC
         tests/
         .
 )
+set_target_properties(generic-item-complete PROPERTIES EXCLUDE_FROM_ALL TRUE)
