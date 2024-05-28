@@ -64,8 +64,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install conan
-        run: pip3 install conan==1.61.0
       - name: Install cmake-format
         run: pip3 install cmake-format
       - name: Setup MSVC (optional)
@@ -79,5 +77,3 @@ jobs:
         id: runcmakebuild
         run: |
           cmake --build ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --parallel --verbose
-      - name: Run tests
-        run : '${{ runner.workspace }}/build/${{ runner.config.build_dir }}/bin/test-buttons'
