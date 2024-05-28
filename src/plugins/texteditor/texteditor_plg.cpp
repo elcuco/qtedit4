@@ -8,11 +8,11 @@
 #include <qmdiactiongroup.h>
 #include <qmdiserver.h>
 
+#include <qsvsh/qsvcolordef.h>
 #include <qsvsh/qsvcolordeffactory.h>
 #include <qsvsh/qsvlangdeffactory.h>
 #include <qsvsh/qsvsyntaxhighlighter.h>
 #include <qsvte/qsvsyntaxhighlighterbase.h>
-#include <qsvsh/qsvcolordef.h>
 
 #include "qmdieditor.h"
 #include "texteditor_plg.h"
@@ -165,7 +165,7 @@ TextEditorPlugin::~TextEditorPlugin() {}
 
 void TextEditorPlugin::showAbout() {
     QMessageBox::information(dynamic_cast<QMainWindow *>(mdiServer), "About",
-                             "This pluging gives a QtSourceView based text edito");
+                             "This plugin gives a QtSourceView based text editor");
 }
 
 QWidget *TextEditorPlugin::getConfigDialog() { return NULL; }
@@ -227,12 +227,12 @@ bool TextEditorPlugin::openFile(const QString fileName, int x, int y, int z) {
     highlighter->rehighlight();
     editor->setHighlighter(highlighter);
     editor->removeModifications();
-    
-    QPalette p(editor->palette());         
-    QsvColorDef dsNormal = editorColors->getColorDef("dsNormal");          
+
+    QPalette p(editor->palette());
+    QsvColorDef dsNormal = editorColors->getColorDef("dsNormal");
     if (dsNormal.getBackground().isValid()) {
-       p.setColor( QPalette::Base, dsNormal.getBackground() );
-       editor->setPalette(p);
+        p.setColor(QPalette::Base, dsNormal.getBackground());
+        editor->setPalette(p);
     }
 
     mdiServer->addClient(editor);
