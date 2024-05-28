@@ -237,6 +237,13 @@ void GenericItemWindow::fillSuggestions(QString requestedSuggestion,
 
 // http://stackoverflow.com/questions/3437404/min-and-max-in-c
 // see also: http://graphics.stanford.edu/~seander/bithacks.html#IntegerMinOrMax
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#unded max
+#endif
+
 #define max(a, b)                                                                                  \
     ({                                                                                             \
         __typeof__(a) _a = (a);                                                                    \
