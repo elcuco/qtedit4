@@ -59,6 +59,7 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.7.1
+          modules: xml
           cache: true
       - uses: actions/setup-python@v5
         with:
