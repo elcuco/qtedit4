@@ -89,12 +89,18 @@ jobs:
           cmake --build ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --parallel --verbose
       - name: Build AppImage
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
-        run:
-          wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool
-          chmod +x appimagetool
+        run: |
+          # export OUTPUT=NotepadNext-v$${APP_VERSION}-x86_64.AppImage 
+          wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+          wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
+          chmod +x linuxdeploy*.AppImage
           mkdir -p dist
-          ./appimagetool YourApp-x86_64.AppImage
+          ./linuxdeploy-x86_64.AppImage --appdir . --plugin qt --output appimage
+          # ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage
+          # ninja install INSTALL_ROOT=AppDir
+          # ninja install -DCMAKE_INSTALL_PREFIX=$PWD/install
           # ./appimagetool --comp xz YourApp-x86_64.AppImage
+          cmake --install ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --prefix=${{ github.workspace }}/cbuild/AppDir/usr/
         working-directory: ${{ runner.workspace }}/build/${{ runner.config.build_dir }}
       - name: Upload AppImage
         if: ${{ matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc' }}

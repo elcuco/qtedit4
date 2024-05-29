@@ -69,6 +69,10 @@ else()
   target_compile_options(qtedit4 PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+install(TARGETS qtedit4
+        RUNTIME DESTINATION bin)
+# install(DIRECTORY ${STYLES_DIR} DESTINATION share/YourAppName/styles
+#         FILES_MATCHING PATTERN "*.xml")        
 ######################
 
 add_executable(generic-item-complete
