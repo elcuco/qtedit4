@@ -111,7 +111,7 @@ jobs:
 
       - name: Install locally - windows
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run: cmake --install "${{ runner.workspace }}\build" --prefix="${{ runner.config.build_dir }}\build\dist\
+        run: cmake --install "${{ runner.workspace }}\build" --prefix="${{ runner.config.build_dir }}\build\dist\"
       - name: Create MSI installer (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
