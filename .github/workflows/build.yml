@@ -88,7 +88,7 @@ jobs:
         run: |
           cmake --build ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --parallel --verbose
       - name: Build AppImage
-        if: matrix.os == 'ubuntu-22.04' && matrix.cc == 'gcc'
+        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run:
           wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool
           chmod +x appimagetool
@@ -96,7 +96,7 @@ jobs:
           ./appimagetool --comp xz YourApp-x86_64.AppImage
         working-directory: build
       - name: Upload AppImage
-        if: ${{ matrix.os == 'ubuntu-22.04' && matrix.cc == 'gcc' }}
+        if: ${{ matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc' }}
         uses: actions/upload-artifact@v2
 
       #   with:
