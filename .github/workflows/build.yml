@@ -101,10 +101,10 @@ jobs:
           cmake --install ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --prefix=${{ github.workspace }}/cbuild/dist/usr/
           ./linuxdeploy-x86_64.AppImage --appdir ${{ github.workspace }}/cbuild/dist/ --plugin qt --output appimage
         working-directory: ${{ runner.workspace }}/build/${{ runner.config.build_dir }}
-      - name: Build AppImage
+      - name: Build windows seetup
         if: matrix.config.os == 'windows-latest' && matrix.config.cc == 'cl'
         run: |          
-          cmake --install ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --prefix=${{ github.workspace }}/cbuild/dist/usr/
+          cmake --install "${{ runner.workspace }}\build\${{ runner.config.build_dir }}"" --prefix="${{ github.workspace }}\cbuild\dist\usr\"
 
           wget -q "https://jrsoftware.org/download.php/is.exe" -O is.exe
           ./is.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART  working-directory: ${{ runner.workspace }}/build/${{ runner.config.build_dir }}
