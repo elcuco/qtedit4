@@ -105,8 +105,6 @@ jobs:
       - name: Upload AppImage
         if: ${{ matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc' }}
         uses: actions/upload-artifact@v2
-
-      #   with:
-      #   name: ${{ matrix.os }}-artifact
-      #   path: |
-      #   YourApp-x86_64.AppImage
+        with:
+          name: ${{ matrix.config.os }}-artifact
+          path: qtedit4-qt671-x86_64.AppImage
