@@ -71,6 +71,13 @@ endif()
 
 install(TARGETS qtedit4
         RUNTIME DESTINATION bin)
+install(FILES ${CMAKE_SOURCE_DIR}/qtedit4.svg
+        DESTINATION share/icons/hicolor/scalable/apps
+        RENAME qtedit4.svg)
+install(FILES ${CMAKE_SOURCE_DIR}/qtedit4.desktop
+        DESTINATION share/applications
+        RENAME qtedit4.desktop)
+
 # install(DIRECTORY ${STYLES_DIR} DESTINATION share/YourAppName/styles
 #         FILES_MATCHING PATTERN "*.xml")        
 ######################
