@@ -91,7 +91,7 @@ jobs:
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run: |          
           export LD_LIBRARY_PATH=${{ github.workspace }}/cbuild/dist/usr/lib/:$LD_LIBRARY_PATH
-          export OUTPUT=qtedit4-qt671-x86_64.AppImage
+          export OUTPUT=${{ runner.workspace }}/build/qtedit4-qt671-x86_64.AppImage
           sudo apt install fuse libxkbcommon-x11-0 libxcb-cursor-dev libxkbcommon-dev
 
           wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
@@ -104,7 +104,7 @@ jobs:
         working-directory: ${{ runner.workspace }}/build/${{ runner.config.build_dir }}
       - name: Upload AppImage
         if: ${{ matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.config.os }}-artifact
-          path: qtedit4-qt671-x86_64.AppImage
+          path: ${{ runner.workspace }}/build/qtedit4-qt671-x86_64.AppImage
