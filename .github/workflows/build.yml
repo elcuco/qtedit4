@@ -104,11 +104,11 @@ jobs:
       - name: Build MSI installer (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |          
-          cmake --install "${{ runner.workspace }}\build\${{ runner.config.build_dir }}"" --prefix="${{ github.workspace }}\cbuild\dist\usr\"
+          cmake --install "${{ runner.workspace }}\build\${{ runner.config.build_dir }}" --prefix="${{ github.workspace }}\cbuild\dist\usr\"
 
           wget -q "https://jrsoftware.org/download.php/is.exe" -O is.exe
           ./is.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART  working-directory: ${{ runner.workspace }}/build/${{ runner.config.build_dir }}
-          C:\Program Files (x86)\Inno Setup 6\ISCC.exe ${{ runner.workspace }}\setup_script.iss
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"  "${{ runner.workspace }}\setup_script.iss"
       - name: Upload AppImage
         if: ${{ matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc' }}
         uses: actions/upload-artifact@v3
