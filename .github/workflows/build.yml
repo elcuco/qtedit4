@@ -4,62 +4,63 @@
 name: Build and test
 on:
   push:
-    braches : ["main", "new-feature-github-actions"]
+    braches: ["main", "new-feature-github-actions"]
 
 jobs:
   build-cmake:
     name: Build ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    runs-on:
+      ${{ matrix.config.os }}
       # see https://gist.github.com/NickNaso/0d478f1481686d5bcc868cac06620a60
     strategy:
       fail-fast: false
       matrix:
-        config: 
-        - {
-            name: "Windows MSVC",
-            build_dir: "windows-msvc",
-            os: windows-latest,
-            build_type: "Release",
-            cc: "cl",
-            cxx: "cl",
-            generators: "Ninja"
-          }
-#        - {
-#            name: "Windows MinGW",
-#            build_dir: "windows-mingw",
-#            os: windows-latest,
-#            build_type: "Release",
-#            cc: "gcc",
-#            cxx: "g++",
-#            generators: "Ninja"
-#          }
-        - {
-            name: "Windows clang",
-            build_dir: "windows-clang",
-            os: windows-latest,
-            build_type: "Release",
-            cc: "clang",
-            cxx: "clang++",
-            generators: "Ninja"
-          }
-        - {
-            name: "Ubuntu GCC",
-            build_dir: "ubungu-gcc",
-            os: ubuntu-22.04,
-            build_type: "Release",
-            cc: "gcc",
-            cxx: "g++",
-            generators: "Ninja"
-          }
-        - {
-            name: "Ubuntu Clang",
-            build_dir: "ubuntu-clang",
-            os: ubuntu-22.04,
-            build_type: "Release",
-            cc: "clang",
-            cxx: "clang++",
-            generators: "Ninja"
-          }
+        config:
+          - {
+              name: "Windows MSVC",
+              build_dir: "windows-msvc",
+              os: windows-latest,
+              build_type: "Release",
+              cc: "cl",
+              cxx: "cl",
+              generators: "Ninja",
+            }
+          #        - {
+          #            name: "Windows MinGW",
+          #            build_dir: "windows-mingw",
+          #            os: windows-latest,
+          #            build_type: "Release",
+          #            cc: "gcc",
+          #            cxx: "g++",
+          #            generators: "Ninja"
+          #          }
+          - {
+              name: "Windows clang",
+              build_dir: "windows-clang",
+              os: windows-latest,
+              build_type: "Release",
+              cc: "clang",
+              cxx: "clang++",
+              generators: "Ninja",
+            }
+          - {
+              name: "Ubuntu GCC",
+              build_dir: "ubungu-gcc",
+              os: ubuntu-22.04,
+              build_type: "Release",
+              cc: "gcc",
+              cxx: "g++",
+              generators: "Ninja",
+            }
+          - {
+              name: "Ubuntu Clang",
+              build_dir: "ubuntu-clang",
+              os: ubuntu-22.04,
+              build_type: "Release",
+              cc: "clang",
+              cxx: "clang++",
+              generators: "Ninja",
+            }
 
     steps:
       - uses: actions/checkout@v4
@@ -68,17 +69,17 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.7.1
-          modules: 'qt5compat'
+          modules: "qt5compat"
           cache: true
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Install cmake-format
         run: pip3 install cmake-format
       - name: Setup MSVC (optional)
         if: ${{ matrix.config.cxx == 'cl' }}
         uses: ilammy/msvc-dev-cmd@v1
-      - name: Confiure 
+      - name: Confiure
         id: runcmake
         run: |
           cmake -S ${{ github.workspace }} -B "${{ runner.workspace }}/build/${{ runner.config.build_dir }}" -G "${{ matrix.config.generators }}" -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
@@ -86,3 +87,19 @@ jobs:
         id: runcmakebuild
         run: |
           cmake --build ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --parallel --verbose
+      - name: Build AppImage
+        if: matrix.os == 'ubuntu-22.04' && matrix.cc == 'gcc'
+        run:
+          wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool
+          chmod +x appimagetool
+          mkdir -p dist
+          ./appimagetool --comp xz YourApp-x86_64.AppImage
+        working-directory: build
+      - name: Upload AppImage
+        if: ${{ matrix.os == 'ubuntu-22.04' && matrix.cc == 'gcc' }}
+        uses: actions/upload-artifact@v2
+
+      #   with:
+      #   name: ${{ matrix.os }}-artifact
+      #   path: |
+      #   YourApp-x86_64.AppImage
