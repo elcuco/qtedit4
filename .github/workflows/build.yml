@@ -94,7 +94,7 @@ jobs:
           chmod +x appimagetool
           mkdir -p dist
           ./appimagetool --comp xz YourApp-x86_64.AppImage
-        working-directory: build
+        working-directory: ${{ runner.workspace }}/build/${{ runner.config.build_dir }}
       - name: Upload AppImage
         if: ${{ matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc' }}
         uses: actions/upload-artifact@v2
