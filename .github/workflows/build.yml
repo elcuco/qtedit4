@@ -80,16 +80,19 @@ jobs:
         if: ${{ matrix.config.cxx == 'cl' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Confiure
+        working-directory: ${{ github.workspace }}
         id: runcmake
         run: |
-          cmake -S ${{ github.workspace }} -B "${{ runner.workspace }}/build/${{ runner.config.build_dir }}" -G "${{ matrix.config.generators }}" -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+          cmake -B "build/${{ matrix.config.build_dir }}" -G "${{ matrix.config.generators }}" -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
       - name: Build
+        working-directory: ${{ github.workspace }}
         id: runcmakebuild
         run: |
-          cmake --build   "${{ runner.workspace }}/build/${{ runner.config.build_dir }}" --parallel --verbose
-          find
-          cmake --install "${{ runner.workspace }}/build/${{ runner.config.build_dir }}" --prefix="${{ runner.workspace }}/build/${{ runner.config.build_dir }}/disr/usr
-          find
+          cmake --build  "build/${{ matrix.config.build_dir }}" --parallel --verbose
+          find . 
+          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dirt/${{ matrix.config.build }}/
+          find . 
+
 
       # - name: Create AppImage (linux)
       #   if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
