@@ -127,6 +127,6 @@ jobs:
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v3
         with:
-          name: Output/qtedit4-qt671-x86_64.exe
-          path: build/qtedit4-win64.exe
+          name: qtedit4-qt671-x86_64.exe
+          path: output/qtedit4-win64.exe
   
