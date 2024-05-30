@@ -12,7 +12,7 @@ Compression=lzma
 SolidCompression=yes
 
 [Files]
-Source: "build\dist\bin\qtedit.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\dist\windows-msvc\bin\qtedit.exe"; DestDir: "{app}"; Flags: ignoreversion
 ;Source: "build\dist\share\YourAppName\styles\*"; DestDir: "{app}\styles"; Flags: recursesubdirs
 
 [Icons]

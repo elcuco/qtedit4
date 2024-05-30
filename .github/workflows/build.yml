@@ -116,11 +116,11 @@ jobs:
           path: build/qtedit4-qt671-x86_64.AppImage
   
 
-      # - name: Create MSI installer (Windows)
-      #   if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-      #   uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
-      #   with:
-      #     path: "setup_script.iss"
+      - name: Create MSI installer (Windows)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: "setup_script.iss"
 
       # - name: Upload MSI
       #   if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
