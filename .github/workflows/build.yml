@@ -83,13 +83,22 @@ jobs:
         working-directory: ${{ github.workspace }}
         id: runcmake
         run: |
+          pwd
           cmake -B "build/${{ matrix.config.build_dir }}" -G "${{ matrix.config.generators }}" -DCMAKE_BUILD_TYPE="${{ matrix.config.build_type }}" -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+          pwd
       - name: Build
         working-directory: ${{ github.workspace }}
         id: runcmakebuild
         run: |
+          pwd
           cmake --build  "build/${{ matrix.config.build_dir }}" --parallel --verbose
-          # find . 
+          find .
+      - name: install
+        working-directory: ${{ github.workspace }}
+        id: runcmakeinstall
+        run: |
+          pwd
+          find . 
           cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr
           # find . 
 
