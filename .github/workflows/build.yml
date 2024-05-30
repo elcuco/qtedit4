@@ -45,7 +45,7 @@ jobs:
             }
           - {
               name: "Ubuntu GCC",
-              build_dir: "ubungu-gcc",
+              build_dir: "ubuntu-gcc",
               os: ubuntu-22.04,
               build_type: "Release",
               cc: "gcc",
@@ -89,9 +89,9 @@ jobs:
         id: runcmakebuild
         run: |
           cmake --build  "build/${{ matrix.config.build_dir }}" --parallel --verbose
-          find . 
-          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dirt/${{ matrix.config.build }}/
-          find . 
+          # find . 
+          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr
+          # find . 
 
 
       # - name: Create AppImage (linux)
