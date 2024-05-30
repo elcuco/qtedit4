@@ -121,10 +121,10 @@ jobs:
         with:
           path: "setup_script.iss"
 
-      # - name: Upload MSI
-      #   if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: qtedit4-qt671-x86_64.msi
-      #     path: ${{ runner.workspace }}/build/qtedit4-qt671-x86_64.msi
+      - name: Upload MSI
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Output/qtedit4-win64.exe
+          path: ${{ runner.workspace }}/build/qtedit4-qt671-x86_64.msi
   
