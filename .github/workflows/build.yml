@@ -53,7 +53,7 @@ jobs:
               generators: "Ninja",
             }
           - {
-              name: "Ubuntu 22.04 Clang",
+              name: "Ubuntu Clang",
               build_dir: "ubuntu-clang",
               os: ubuntu-22.04,
               build_type: "Release",
