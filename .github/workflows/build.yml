@@ -97,7 +97,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         id: runcmakeinstall
         run: |
-          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr
+          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr"
           ls -l || true
           ls -l dist 
           # find . 
