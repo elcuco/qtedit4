@@ -17,7 +17,7 @@ jobs:
       matrix:
         config:
           - {
-              name: "Windows MSVC",
+              name: "Windows 2022 MSVC",
               build_dir: "windows-msvc",
               os: windows-2022,
               build_type: "Release",
@@ -35,7 +35,7 @@ jobs:
           #            generators: "Ninja"
           #          }
           - {
-              name: "Windows Clang 16",
+              name: "Windows 2022 - Clang 16",
               build_dir: "windows-clang",
               os: windows-2022,
               build_type: "Release",
@@ -44,7 +44,7 @@ jobs:
               generators: "Ninja",
             }
           - {
-              name: "Ubuntu GCC",
+              name: "Ubuntu 22.04 GCC (*)",
               build_dir: "ubuntu-gcc",
               os: ubuntu-22.04,
               build_type: "Release",
@@ -53,7 +53,7 @@ jobs:
               generators: "Ninja",
             }
           - {
-              name: "Ubuntu Clang",
+              name: "Ubuntu 22.04 Clang",
               build_dir: "ubuntu-clang",
               os: ubuntu-22.04,
               build_type: "Release",
@@ -97,7 +97,7 @@ jobs:
         run: |
           cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr"
 
-      - name: Create AppImage (linux)
+      - name: Create AppImage
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run: |
           find . || true
@@ -110,7 +110,7 @@ jobs:
           ./linuxdeploy-x86_64.AppImage --appdir "dist/${{ matrix.config.build }}" --plugin qt --output appimage
       - name: Upload AppImage
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: qtedit4-qt671-x86_64.AppImage
           path: build/qtedit4-qt671-x86_64.AppImage
