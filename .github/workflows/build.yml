@@ -93,14 +93,13 @@ jobs:
           pwd
           cmake --build  "build/${{ matrix.config.build_dir }}" --parallel --verbose
           find .
-      - name: install
+      - name: Install
         working-directory: ${{ github.workspace }}
         id: runcmakeinstall
         run: |
           cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr"
-          ls -l || true
-          ls -l dist 
-          # find . 
+          ls -l dist
+          find dist || true
 
 
       # - name: Create AppImage (linux)
