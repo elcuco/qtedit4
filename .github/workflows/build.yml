@@ -126,5 +126,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Output/qtedit4-win64.exe
-          path: ${{ runner.workspace }}/build/qtedit4-qt671-x86_64.msi
+          path: build/qtedit4-qt671-x86_64.exe
   
