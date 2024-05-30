@@ -4,14 +4,14 @@
 name: Build and test
 on:
   push:
-    braches: ["main", "new-feature-github-actions"]
+    # branches: ["main"]
 
 jobs:
   build-cmake:
     name: Build ${{ matrix.config.name }}
-    runs-on:
-      ${{ matrix.config.os }}
-      # see https://gist.github.com/NickNaso/0d478f1481686d5bcc868cac06620a60
+    runs-on: ${{ matrix.config.os }}
+
+    # see https://gist.github.com/NickNaso/0d478f1481686d5bcc868cac06620a60
     strategy:
       fail-fast: false
       matrix:
@@ -86,8 +86,8 @@ jobs:
       - name: Build
         id: runcmakebuild
         run: |
-          cmake --build ${{ runner.workspace }}/build/${{ runner.config.build_dir }} --parallel --verbose
-          cmake --install ${{ runner.workspace }}/build/${{ matrix.config.build_dir }} --prefix=${{ github.workspace }}/build/dist/usr/
+          cmake --build   "${{ runner.workspace }}/build/${{ runner.config.build_dir }}" --parallel --verbose
+          cmake --install "${{ runner.workspace }}/build/${{ matrix.config.build_dir }}" --prefix="${{ runner.workspace }}/build/${{ runner.config.build_dir }}/dist/usr/"
 
       # - name: Create AppImage (linux)
       #   if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
