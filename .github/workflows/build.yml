@@ -17,7 +17,7 @@ jobs:
       matrix:
         config:
           - {
-              name: "Windows 2022 MSVC",
+              name: "Windows MSVC",
               build_dir: "windows-msvc",
               os: windows-2022,
               build_type: "Release",
@@ -35,7 +35,7 @@ jobs:
           #            generators: "Ninja"
           #          }
           - {
-              name: "Windows 2022 - Clang 16",
+              name: "Windows Clang 16",
               build_dir: "windows-clang",
               os: windows-2022,
               build_type: "Release",
@@ -44,7 +44,7 @@ jobs:
               generators: "Ninja",
             }
           - {
-              name: "Ubuntu 22.04 GCC (*)",
+              name: "Ubuntu GCC",
               build_dir: "ubuntu-gcc",
               os: ubuntu-22.04,
               build_type: "Release",
@@ -95,19 +95,18 @@ jobs:
         working-directory: ${{ github.workspace }}
         id: runcmakeinstall
         run: |
-          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build }}/usr"
+          cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build_dir }}/usr"
 
       - name: Create AppImage
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run: |
-          find . || true
-          export LD_LIBRARY_PATH=dist/${{ matrix.config.build }}/usr/lib:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=dist/${{ matrix.config.build_dir }}/usr/lib:$LD_LIBRARY_PATH
           export OUTPUT=build/qtedit4-qt671-x86_64.AppImage
           sudo apt install fuse libxkbcommon-x11-0 libxcb-cursor-dev libxkbcommon-dev
           wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
           wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
           chmod +x linuxdeploy*.AppImage
-          ./linuxdeploy-x86_64.AppImage --appdir "dist/${{ matrix.config.build }}" --plugin qt --output appimage
+          ./linuxdeploy-x86_64.AppImage --appdir "dist/${{ matrix.config.build_dir }}" --plugin qt --output appimage
       - name: Upload AppImage
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         uses: actions/upload-artifact@v4
