@@ -18,9 +18,10 @@
     <DirectoryRef Id="INSTALLFOLDER">
       <Component Id="MainExecutable" Guid="e5785530-130a-4b00-ada8-a71be60d3fee">
         <File Id="qtedit4.exe" Source="dist\windows-msvc\usr\bin\qtedit4.exe" KeyPath="yes" />
-        <File Id="AdditionalFiles" Source="dist\windows-msvc\usr\bin\*" />
       </Component>
     </DirectoryRef>
+
+    <?include Files.wxs ?>
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ProgramMenuShortcuts" Guid="09e7ad58-b1cd-474c-af19-e7e1571d8b63">
