@@ -121,16 +121,30 @@ jobs:
         run: |
           windeployqt --release --no-translations --no-system-d3d-compiler --no-compiler-runtime --no-opengl-sw dist/${{ matrix.config.build_dir }}/usr/bin/qtedit4.exe
  
-      - name: Create MSI installer (Windows)
+      - name: Create setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.4
         with:
           path: "setup_script.iss"
 
-      - name: Upload MSI
+      - name: Upload setup
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
         with:
           name: qtedit4-qt671-x86_64.exe
           path: dist/qtedit4-win64.exe
-  
+
+        
+      - name: Create MSI (Windows)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        run: |
+          choco install wixtoolset --version=3.11.2
+          candle.exe -o dist/${{ matrix.config.build_dir }} qtedit4.wxs
+          light.exe -o dist/qtedit4-qt671-x86_64.msi dist/${{ matrix.config.build_dir }}
+      - name: Upload MSI Installer
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        uses: actions/upload-artifact@v3
+        with:
+          name: qtedit4-qt671-x86_64.msi
+          path: dist/qtedit4-qt671-x86_64.msi
+    
