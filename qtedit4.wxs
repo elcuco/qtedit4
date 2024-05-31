@@ -21,7 +21,7 @@
       </Component>
     </DirectoryRef>
 
-    <?include Files.wxs ?>
+    <?include dist/qtedit4-files.wxs ?>
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ProgramMenuShortcuts" Guid="09e7ad58-b1cd-474c-af19-e7e1571d8b63">
