@@ -15,7 +15,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-add_executable(qtedit4
 set(qtedit4_sources
         lib/qmdilib/demos/plugin-demo/iplugin.cpp
         lib/qmdilib/demos/plugin-demo/pluginmodel.cpp
