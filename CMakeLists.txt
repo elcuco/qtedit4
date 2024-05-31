@@ -50,7 +50,6 @@ set(qtedit4_sources
         lib/qmdilib/demos/plugin-demo/pluginwindow.ui
         lib/qmdilib/demos/plugin-demo/plugin_list.ui
         lib/qmdilib/demos/plugin-demo/plugins/editor/editor_cfg.ui
-
 )
 
 if (WIN32)
