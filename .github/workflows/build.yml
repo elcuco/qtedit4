@@ -116,17 +116,17 @@ jobs:
           name: qtedit4-qt671-x86_64.AppImage
           path: build/qtedit4-qt671-x86_64.AppImage
   
-
+      - name: windeployqt (Windows)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        run:
+          windeployqt --release --no-translations --no-system-d3d-compiler --no-compiler-runtime --no-opengl-sw dist/${{ matrix.config.build_dir }}/usr/bin/qtedit4.exe
+          dir /s
+ 
       - name: Create MSI installer (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: "setup_script.iss"
-
-      - name: windeployqt (Windows)
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run:
-          windeployqt --release --no-translations --no-system-d3d-compiler --no-compiler-runtime --no-opengl-sw dist/${{ matrix.config.build_dir }}/usr/bin/qtedit4.exe
 
       - name: Upload MSI
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
