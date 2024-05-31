@@ -6,10 +6,11 @@ AppVersion=0.1
 DefaultDirName={pf}\qtedit4
 DefaultGroupName=qtedit4
 UninstallDisplayIcon={app}\bin\qtedit4.exe
-OutputDir=Output
+OutputDir=dist
 OutputBaseFilename=qtedit4-win64
 Compression=lzma
 SolidCompression=yes
+ArchitecturesInstallIn64BitMode=x64
 
 [Files]
 Source: "dist\windows-msvc\usr\bin\qtedit4.exe"; DestDir: "{app}"; Flags: ignoreversion

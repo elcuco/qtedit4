@@ -16,6 +16,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 add_executable(qtedit4
+set(qtedit4_sources
         lib/qmdilib/demos/plugin-demo/iplugin.cpp
         lib/qmdilib/demos/plugin-demo/pluginmodel.cpp
         lib/qmdilib/demos/plugin-demo/pluginmodel.h
@@ -52,6 +53,12 @@ add_executable(qtedit4
         lib/qmdilib/demos/plugin-demo/plugins/editor/editor_cfg.ui
 
 )
+
+if (WIN32)
+    add_executable(qtedit4 WIN32 ${qtedit4_sources})
+else()
+    add_executable(qtedit4 ${qtedit4_sources})
+endif()
 
 target_include_directories( qtedit4 PUBLIC
         src/widgets
