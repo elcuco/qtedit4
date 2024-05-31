@@ -123,6 +123,11 @@ jobs:
         with:
           path: "setup_script.iss"
 
+      - name: windeployqt (Windows)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        run:
+          package.commands += windeployqt --release --no-translations --no-system-d3d-compiler --no-compiler-runtime --no-opengl-sw dist/${{ matrix.config.build_dir }}/usr/bin/qtedit4.exe
+
       - name: Upload MSI
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v3
