@@ -1,5 +1,6 @@
 #include <QAction>
 #include <QActionGroup>
+#include <QCoreApplication>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStringList>
@@ -155,8 +156,13 @@ TextEditorPlugin::TextEditorPlugin() {
     myNewActions->addAction(actionNewCPP);
     myNewActions->addAction(actionNewHeader);
 
-    editorColors = new QsvColorDefFactory("share/colors/kate.xml");
-    QsvLangDefFactory::getInstanse()->loadDirectory("share/langs/");
+#if defined(WIN32)
+    auto installPrefix = QCoreApplication::applicationDirPath();
+#else
+    auto installPrefix = QCoreApplication::applicationDirPath() + "/..";
+#endif
+    editorColors = new QsvColorDefFactory(installPrefix + "/share/colors/kate.xml");
+    QsvLangDefFactory::getInstanse()->loadDirectory(installPrefix + "/share/langs/");
 
     connect(myNewActions, SIGNAL(triggered(QAction *)), this, SLOT(fileNew(QAction *)));
 }

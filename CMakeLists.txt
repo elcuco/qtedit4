@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project (qtedit4)
 
-
-include(GNUInstallDirs)
-
 # 3rd party libs
 set(QMDILIB_BUILD_EXAMPLES Off)
 set(QTSOURCEVIEW_BUILD_EXAMPLES Off)
@@ -74,6 +71,7 @@ if(MSVC)
    set_target_properties(qtedit4 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}$<0:>)
    target_compile_options(qtedit4 PRIVATE /W4)
 else()
+  set_target_properties(qtedit4 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
   target_compile_options(qtedit4 PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
