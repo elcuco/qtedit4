@@ -134,18 +134,4 @@ jobs:
           name: qtedit4-qt671-x86_64.exe
           path: dist/qtedit4-win64.exe
 
-        
-      - name: Create MSI (Windows)
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run: |
-          # echo choco install wixtoolset --version=3.11.2
-          # rem echo heat dir "dist/${{ matrix.config.build_dir }}" -dr INSTALLFOLDER -ke -srd -cg MainExecutable2 -var var.SourceDir -out dist/qtedit4-files.wxs
-          candle.exe -o dist/${{ matrix.config.build_dir }} qtedit4.wxs
-          light.exe -o dist/qtedit4-qt671-x86_64.msi dist/${{ matrix.config.build_dir }}
-      - name: Upload MSI Installer
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        uses: actions/upload-artifact@v3
-        with:
-          name: qtedit4-qt671-x86_64.msi
-          path: dist/qtedit4-qt671-x86_64.msi
     
