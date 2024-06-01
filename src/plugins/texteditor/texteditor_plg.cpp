@@ -155,8 +155,8 @@ TextEditorPlugin::TextEditorPlugin() {
     myNewActions->addAction(actionNewCPP);
     myNewActions->addAction(actionNewHeader);
 
-    editorColors = new QsvColorDefFactory("lib/qtsourceview/data/colors/kate.xml");
-    QsvLangDefFactory::getInstanse()->loadDirectory("lib/qtsourceview/data/langs/");
+    editorColors = new QsvColorDefFactory("share/colors/kate.xml");
+    QsvLangDefFactory::getInstanse()->loadDirectory("share/langs/");
 
     connect(myNewActions, SIGNAL(triggered(QAction *)), this, SLOT(fileNew(QAction *)));
 }

@@ -15,6 +15,7 @@ ArchitecturesInstallIn64BitMode=x64
 [Files]
 Source: "dist\windows-msvc\usr\bin\qtedit4.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\windows-msvc\usr\bin\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "dist\windows-msvc\usr\share\*"; DestDir: "{app}\share"; Flags: recursesubdirs
 ;Source: "build\dist\share\YourAppName\styles\*"; DestDir: "{app}\styles"; Flags: recursesubdirs
 
 [Icons]
