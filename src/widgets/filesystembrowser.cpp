@@ -26,7 +26,7 @@ FileSystemBrowser::FileSystemBrowser(QWidget *parent, Qt::WindowFlags f) : QWidg
     treeView->setModel(dirModel);
     treeView->setDragEnabled(true);
     treeView->setAcceptDrops(true);
-    treeView->setEditTriggers(QAbstractItemView::EditKeyPressed)
+    treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
 
     listView->setModel(dirModel);
     treeView->setModel(dirModel);
