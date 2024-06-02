@@ -23,15 +23,8 @@ FileSystemBrowser::FileSystemBrowser(QWidget *parent, Qt::WindowFlags f) : QWidg
     dirModel->setRootPath(QDir::rootPath());
     dirModel->setReadOnly(false);
 
-    treeView->setModel(dirModel);
-    treeView->setDragEnabled(true);
-    treeView->setAcceptDrops(true);
-    treeView->setEditTriggers(QAbstractItemView::EditKeyPressed);
-
     listView->setModel(dirModel);
-    treeView->setModel(dirModel);
-    treeView->setDragEnabled(true);
-    treeView->setAcceptDrops(true);
+    listView->setEditTriggers(QAbstractItemView::EditKeyPressed);
 
     completer = new QCompleter(locationLineEdit);
     completer->setModel(dirModel);
@@ -46,8 +39,6 @@ FileSystemBrowser::FileSystemBrowser(QWidget *parent, Qt::WindowFlags f) : QWidg
     splitter->setSizes(l);
     QTimer::singleShot(0, this, SLOT(init()));
 }
-
-QTreeView *FileSystemBrowser::getTreeView() { return treeView; }
 
 QListView *FileSystemBrowser::getListView() { return listView; }
 
