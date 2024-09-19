@@ -134,12 +134,28 @@ jobs:
         with:
           path: "setup_script.iss"
           options: /O+
+      - name: Build MSI (Windows)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        run: |
+          choco install wix -y
+          candle qtedit4.wxs
+          light -out dist/qtedit4.msi qtedit4.wixobj
       - name: Upload setup
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
         with:
           name: qtedit4-qt671-x86_64.exe
           path: dist/qtedit4-win64.exe
+      - name: Upload MSI (Windows MSI)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/qtedit4.msi
+          asset_name: qtedit4-qt671-x86_64.msi
+          asset_content_type: application/octet-stream
 
   create-release:
     needs: build-cmake

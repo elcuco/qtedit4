@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="qtedit4" Language="1033" Version="0.1.0.0" Manufacturer="YourCompany" UpgradeCode="PUT-GUID-HERE">
+        <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+
+        <MediaTemplate />
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLFOLDER" Name="qtedit4" />
+            </Directory>
+        </Directory>
+
+        <Feature Id="ProductFeature" Title="qtedit4" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="qtedit4.exe" Guid="PUT-GUID-HERE">
+                <File Source="dist\windows-msvc\usr\bin\qtedit4.exe" KeyPath="yes" />
+            </Component>
+            <Component Id="DLLs" Guid="PUT-GUID-HERE">
+                <File Source="dist\windows-msvc\usr\bin\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\generic\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\iconengines\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\imageformats\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\networkinformation\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\platforms\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\styles\*.dll" />
+                <File Source="dist\windows-msvc\usr\bin\tls\*.dll" />
+            </Component>
+            <Component Id="Icons" Guid="PUT-GUID-HERE">
+                <File Source="dist\windows-msvc\usr\share\icons\breeze\index.theme" />
+                <Directory Id="INSTALLFOLDER\icons\breeze">
+                    <Component Id="BreezeIcons" Guid="PUT-GUID-HERE">
+                        <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\16\*.svg" />
+                        <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\22\*.svg" />
+                        <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\32\*.svg" />
+                        <File Source="dist\windows-msvc\usr\share\icons\breeze\devices\16\*.svg" />
+                        <File Source="dist\windows-msvc\usr\share\icons\breeze\devices\22\*.svg" />
+                    </Component>
+                </Directory>
+                <File Source="dist\windows-msvc\usr\qtedit4.ico" />
+            </Component>
+        </ComponentGroup>
+
+        <Icon Id="qtedit4Icon" SourceFile="dist\windows-msvc\usr\qtedit4.ico" />
+
+        <Shortcut Id="desktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="qtedit4"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="qtedit4Icon"
+                  IconIndex="0"
+                  Target="[INSTALLFOLDER]qtedit4.exe" />
+    </Product>
+</Wix>
