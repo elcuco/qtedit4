@@ -27,15 +27,15 @@ jobs:
               cxx: "cl",
               generators: "Ninja",
             }
-          #        - {
-          #            name: "Windows MinGW",
-          #            build_dir: "windows-mingw",
-          #            os: windows-latest,
-          #            build_type: "Release",
-          #            cc: "gcc",
-          #            cxx: "g++",
-          #            generators: "Ninja"
-          #          }
+          - {
+              name: "Windows MinGW",
+              build_dir: "windows-mingw",
+              os: windows-latest,
+              build_type: "Release",
+              cc: "gcc",
+              cxx: "g++",
+              generators: "Ninja"
+            }
           - {
               name: "Windows Clang 16",
               build_dir: "windows-clang",
