@@ -137,6 +137,7 @@ jobs:
 
 
       - name: Install WiX Toolset
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
           choco install wixtoolset -y
           echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
@@ -151,7 +152,6 @@ jobs:
 
           # Build the MSI
           wix build qtedit4.wxs DLLFiles.wxs GenericDLLFiles.wxs IconFiles.wxs -out dist/qtedit4.msi
-        shell: pwsh
 
       - name: Upload MSI (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
