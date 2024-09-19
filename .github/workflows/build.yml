@@ -151,7 +151,15 @@ jobs:
           heat dir "${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin/generic" -cg GenericDLLFiles -gg -srd -sfrag -out GenericDLLFiles.wxs
           heat dir "${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze" -cg IconFiles -gg -srd -sfrag -out IconFiles.wxs
         shell: cmd
+      - name: Update namespaces in generated .wxs files
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        run: |
+          (Get-Content DLLFiles.wxs).replace('http://schemas.microsoft.com/wix/2006/wi', 'http://wixtoolset.org/schemas/v4/wxs') | Set-Content DLLFiles.wxs
+          (Get-Content GenericDLLFiles.wxs).replace('http://schemas.microsoft.com/wix/2006/wi', 'http://wixtoolset.org/schemas/v4/wxs') | Set-Content GenericDLLFiles.wxs
+          (Get-Content IconFiles.wxs).replace('http://schemas.microsoft.com/wix/2006/wi', 'http://wixtoolset.org/schemas/v4/wxs') | Set-Content IconFiles.wxs
+        shell: pwsh
       - name: Build MSI
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
           wix build qtedit4.wxs DLLFiles.wxs GenericDLLFiles.wxs IconFiles.wxs -out dist/qtedit4.msi -d DLLFiles="${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin" -d GenericDLLFiles="${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin/generic" -d IconFiles="${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze"
         shell: cmd
