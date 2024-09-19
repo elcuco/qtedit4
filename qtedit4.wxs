@@ -16,7 +16,7 @@
 
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component>
-        <File Source="dist\windows-msvc\usr\bin\qtedit4.exe" KeyPath="yes" />
+        <File Source="!(bindpath.DLLFiles)\qtedit4.exe" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
@@ -25,7 +25,7 @@
     <!-- ComponentGroup Id="GenericDLLFiles" -->
     <!-- ComponentGroup Id="IconFiles" -->
 
-    <Icon Id="qtedit4Icon" SourceFile="dist\windows-msvc\usr\qtedit4.ico" />
+    <Icon Id="qtedit4Icon" SourceFile="!(bindpath.DLLFiles)\qtedit4.ico" />
 
     <StandardDirectory Id="DesktopFolder">
       <Component Id="DesktopShortcut" Guid="*">
