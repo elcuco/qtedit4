@@ -162,7 +162,7 @@ jobs:
           name: qtedit4-qt671-x86_64.msi
           path: dist/qtedit4.msi
       - name: Upload Release Asset (Windows MSI)
-       if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
