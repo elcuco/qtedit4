@@ -8,6 +8,7 @@
       <ComponentGroupRef Id="DLLFiles" />
       <ComponentGroupRef Id="GenericDLLFiles" />
       <ComponentGroupRef Id="IconFiles" />
+      <ComponentRef Id="DesktopShortcut" />
     </Feature>
 
     <StandardDirectory Id="ProgramFiles6432Folder">
