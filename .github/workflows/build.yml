@@ -160,8 +160,8 @@ jobs:
   create-release:
     needs: build-cmake
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')  # Trigger only on tags
-    # if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/github-actions')
+    # if: startsWith(github.ref, 'refs/tags/v')  # Trigger only on tags
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/github-actions')
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -176,8 +176,8 @@ jobs:
         with:
           tag_name: ${{ github.ref }}-${{ github.sha }}
           release_name: Release ${{ github.ref }}-${{ github.sha }}
-          draft: false
-          prerelease: false
+          draft: true
+          prerelease: true
 
       - name: Upload Release Asset (AppImage)
         uses: actions/upload-release-asset@v1

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="qtedit4" Language="1033" Version="0.1.0.0" Manufacturer="YourCompany" UpgradeCode="PUT-GUID-HERE">
+    <Product Id="*" Name="qtedit4" Language="1033" Version="0.0.0.2" Manufacturer="qtedit4" UpgradeCode="b0c9c8e2-833f-487d-81a5-bc26e028d495">
         <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
 
         <MediaTemplate />
@@ -16,10 +16,8 @@
         </Feature>
 
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-            <Component Id="qtedit4.exe" Guid="PUT-GUID-HERE">
+            <Component Id="qtedit4.exe" Guid="1617fb4c-67cb-4474-b41e-74150a993340">
                 <File Source="dist\windows-msvc\usr\bin\qtedit4.exe" KeyPath="yes" />
-            </Component>
-            <Component Id="DLLs" Guid="PUT-GUID-HERE">
                 <File Source="dist\windows-msvc\usr\bin\*.dll" />
                 <File Source="dist\windows-msvc\usr\bin\generic\*.dll" />
                 <File Source="dist\windows-msvc\usr\bin\iconengines\*.dll" />
@@ -29,17 +27,13 @@
                 <File Source="dist\windows-msvc\usr\bin\styles\*.dll" />
                 <File Source="dist\windows-msvc\usr\bin\tls\*.dll" />
             </Component>
-            <Component Id="Icons" Guid="PUT-GUID-HERE">
+            <Component Id="Icons" Guid="0016482e-5624-481c-9bfd-9bd582e3803c">
                 <File Source="dist\windows-msvc\usr\share\icons\breeze\index.theme" />
-                <Directory Id="INSTALLFOLDER\icons\breeze">
-                    <Component Id="BreezeIcons" Guid="PUT-GUID-HERE">
-                        <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\16\*.svg" />
-                        <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\22\*.svg" />
-                        <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\32\*.svg" />
-                        <File Source="dist\windows-msvc\usr\share\icons\breeze\devices\16\*.svg" />
-                        <File Source="dist\windows-msvc\usr\share\icons\breeze\devices\22\*.svg" />
-                    </Component>
-                </Directory>
+                <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\16\*.svg" />
+                <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\22\*.svg" />
+                <File Source="dist\windows-msvc\usr\share\icons\breeze\actions\32\*.svg" />
+                <File Source="dist\windows-msvc\usr\share\icons\breeze\devices\16\*.svg" />
+                <File Source="dist\windows-msvc\usr\share\icons\breeze\devices\22\*.svg" />
                 <File Source="dist\windows-msvc\usr\qtedit4.ico" />
             </Component>
         </ComponentGroup>
