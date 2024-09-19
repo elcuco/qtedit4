@@ -134,12 +134,16 @@ jobs:
         with:
           path: "setup_script.iss"
           options: /O+
+      - name: Add msbuild to PATH
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        uses: microsoft/setup-msbuild@v1.1
       - name: Build MSI (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
-          choco install wix -y --pre
-          candle qtedit4.wxs
-          light -out dist/qtedit4.msi qtedit4.wixobj
+          dotnet tool install --global wix
+          wix build qtedit4.wxs
+          echo candle qtedit4.wxs
+          echo light -out dist/qtedit4.msi qtedit4.wixobj
       - name: Upload setup
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
