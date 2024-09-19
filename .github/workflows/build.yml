@@ -141,7 +141,7 @@ jobs:
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
           dotnet tool install --global wix
-          wix build qtedit4.wxs -o dist
+          wix build qtedit4.wxs -o ./dist/qtedit4.msi
       - name: Upload setup
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
