@@ -147,18 +147,17 @@ void TextEditorPlugin::showAbout() {
 QActionGroup *TextEditorPlugin::newFileActions() { return myNewActions; }
 
 QStringList TextEditorPlugin::myExtensions() {
-    QStringList s;
+    auto s = QStringList();
     s << tr("Sources", "EditorPlugin::myExtensions") + " (*.c *.cpp *.cxx *.h *.hpp *.hxx *.inc)";
     s << tr("Headers", "EditorPlugin::myExtensions") + " (*.h *.hpp *.hxx *.inc)";
     s << tr("Text files", "EditorPlugin::myExtensions") + " (*.txt)";
     s << tr("Qt project", "EditorPlugin::myExtensions") + " (*.pro *.pri)";
     s << tr("All files", "EditorPlugin::myExtensions") + " (*.*)";
-
     return s;
 }
 
 int TextEditorPlugin::canOpenFile(const QString fileName) {
-    QUrl u(fileName);
+    auto u = QUrl(fileName);
 
     // if the scheme is a single line, lets assume this is a windows drive
     if (u.scheme().length() != 1) {
@@ -168,12 +167,12 @@ int TextEditorPlugin::canOpenFile(const QString fileName) {
     }
 
     static const QStringList extensions = {
-        ".c",   ".cpp",    ".cxx",   ".h",      ".hpp",     ".hxx",    ".inc",
-        ".pro", ".pri",    ".txt",   ".inc",    ".java",    ".js",     ".py",
-        ".rb",  ".pas",    "bas",    ".swift",  ".mk",      ".bat",    ".sh",
-        ".md",  ".user",   ".bak",   ".txt",    ".text",    ".dox",    ".desktop",
-        ".old", "license", "readme", "copying", "Makefile", "Doxyfile"};
-    for (const QString &ext : extensions) {
+        ".c",    ".cpp", ".cxx",  ".cc",     ".h",       ".hpp",    ".hxx",     ".inc",
+        ".pro",  ".pri", ".txt",  ".inc",    ".java",    ".js",     ".py",      ".rb",
+        ".go",   ".pas", ".bas",  ".swift",  ".mk",      ".bat",    ".sh",      ".md",
+        ".user", ".txt", ".text", ".dox",    ".desktop", ".old",    ".bak",     ".mk",
+        ".lic",  ".xml", ".json", "license", "readme",   "copying", "Makefile", "Doxyfile"};
+    for (const auto &ext : extensions) {
         if (fileName.endsWith(ext, Qt::CaseInsensitive)) {
             return 5;
         }
@@ -183,9 +182,9 @@ int TextEditorPlugin::canOpenFile(const QString fileName) {
         return 5;
     }
 
-    QFile file(fileName);
+    auto file = QFile(fileName);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&file);
+        auto in = QTextStream(&file);
         QString firstLines = in.readLine();
         firstLines.append(in.readLine());
         firstLines.append(in.readLine());
@@ -262,6 +261,6 @@ void TextEditorPlugin::configurationHasBeenModified() {
 }
 
 void TextEditorPlugin::fileNew(QAction *) {
-    qmdiEditor *editor = new qmdiEditor(dynamic_cast<QMainWindow *>(mdiServer));
+    auto editor = new qmdiEditor(dynamic_cast<QMainWindow *>(mdiServer));
     mdiServer->addClient(editor);
 }
