@@ -27,15 +27,15 @@ jobs:
               cxx: "cl",
               generators: "Ninja",
             }
-          - {
-              name: "Windows MinGW",
-              build_dir: "windows-mingw",
-              os: windows-latest,
-              build_type: "Release",
-              cc: "gcc",
-              cxx: "g++",
-              generators: "Ninja"
-            }
+          # - {
+          #     name: "Windows MinGW",
+          #     build_dir: "windows-mingw",
+          #     os: windows-latest,
+          #     build_type: "Release",
+          #     cc: "gcc",
+          #     cxx: "g++",
+          #     generators: "Ninja"
+          #   }
           - {
               name: "Windows Clang 16",
               build_dir: "windows-clang",
@@ -138,3 +138,44 @@ jobs:
         with:
           name: qtedit4-qt671-x86_64.exe
           path: dist/qtedit4-win64.exe
+
+  create-release:
+    needs: build-cmake
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/github-actions')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}-${{ github.sha }}
+          release_name: Release ${{ github.ref }}-${{ github.sha }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset (AppImage)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/qtedit4-qt671-x86_64.AppImage/qtedit4-qt671-x86_64.AppImage
+          asset_name: qtedit4-qt671-x86_64.AppImage
+          asset_content_type: application/x-executable
+
+      - name: Upload Release Asset (Windows Setup)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/qtedit4-qt671-x86_64.exe/qtedit4-win64.exe
+          asset_name: qtedit4-qt671-x86_64-setup.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
