@@ -148,9 +148,9 @@ jobs:
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
           # Generate file lists using heat
-          wix heat dir dist/${{ matrix.config.build_dir }}/usr/bin -cg DLLFiles -gg -srd -sfrag -var var.DLLFiles -out DLLFiles.wxs
-          wix heat dir dist/${{ matrix.config.build_dir }}/usr/bin/generic -cg GenericDLLFiles -gg -srd -sfrag -var var.GenericDLLFiles -out GenericDLLFiles.wxs
-          wix heat dir dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze -cg IconFiles -gg -srd -sfrag -var var.IconFiles -out IconFiles.wxs
+          dotnet wix heat dir dist/${{ matrix.config.build_dir }}/usr/bin -cg DLLFiles -gg -srd -sfrag -var var.DLLFiles -out DLLFiles.wxs
+          dotnet wix heat dir dist/${{ matrix.config.build_dir }}/usr/bin/generic -cg GenericDLLFiles -gg -srd -sfrag -var var.GenericDLLFiles -out GenericDLLFiles.wxs
+          dotnet wix heat dir dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze -cg IconFiles -gg -srd -sfrag -var var.IconFiles -out IconFiles.wxs
 
           # Build the MSI
           wix build qtedit4.wxs DLLFiles.wxs GenericDLLFiles.wxs IconFiles.wxs -out dist/qtedit4.msi
