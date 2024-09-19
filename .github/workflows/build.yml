@@ -147,12 +147,9 @@ jobs:
       - name: Create MSI (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
-          # Generate file lists using heat
-          "C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe" dir dist/${{ matrix.config.build_dir }}/usr/bin -cg DLLFiles -gg -srd -sfrag -var var.DLLFiles -out DLLFiles.wxs
-          "C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe" dir dist/${{ matrix.config.build_dir }}/usr/bin/generic -cg GenericDLLFiles -gg -srd -sfrag -var var.GenericDLLFiles -out GenericDLLFiles.wxs
-          "C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe" dir dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze -cg IconFiles -gg -srd -sfrag -var var.IconFiles -out IconFiles.wxs
-
-          # Build the MSI
+          C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe dir dist/${{ matrix.config.build_dir }}/usr/bin -cg DLLFiles -gg -srd -sfrag -var var.DLLFiles -out DLLFiles.wxs
+          C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe dir dist/${{ matrix.config.build_dir }}/usr/bin/generic -cg GenericDLLFiles -gg -srd -sfrag -var var.GenericDLLFiles -out GenericDLLFiles.wxs
+          C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe dir dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze -cg IconFiles -gg -srd -sfrag -var var.IconFiles -out IconFiles.wxs
           wix build qtedit4.wxs DLLFiles.wxs GenericDLLFiles.wxs IconFiles.wxs -out dist/qtedit4.msi
 
       - name: Upload MSI (Windows)
