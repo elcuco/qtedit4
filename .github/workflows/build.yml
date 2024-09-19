@@ -137,7 +137,7 @@ jobs:
       - name: Build MSI (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
-          choco install wix -y
+          choco install wix -y --pre
           candle qtedit4.wxs
           light -out dist/qtedit4.msi qtedit4.wixobj
       - name: Upload setup
