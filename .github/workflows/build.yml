@@ -166,10 +166,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
             if-no-files-found: error
+            merge-multiple: true
       - name: Set version tag or commit SHA
         id: version
         run: |
           ls -lah qtedit4-qt671-*
+          find qtedit4-qt671-*
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
           else
