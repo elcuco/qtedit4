@@ -170,8 +170,8 @@ jobs:
       - name: Set version tag or commit SHA
         id: version
         run: |
-          find .
-          ls -lR
+          find  ${GITHUB_WORKSPACE}
+          ls -lR ${GITHUB_WORKSPACE}
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
           else
