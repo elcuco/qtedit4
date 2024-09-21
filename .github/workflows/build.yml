@@ -165,11 +165,11 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-            if-no-files-found: error
+            pattern: qtedit4-qt*
       - name: Set version tag or commit SHA
         id: version
         run: |
-          find . |  qtedit4-qt671-*
+          find . | grep  qtedit4-qt671-*
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
           else
