@@ -131,8 +131,8 @@ jobs:
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         uses: actions/upload-artifact@v4
         with:
-          name: qtedit4-qt671-x86_64.AppImage
-          path: build/qtedit4-qt671-${{ env.version }}-x86_64.AppImage
+          name: qtedit4-qt671-${{ env.version }}-x86_64.AppImage
+          path: build/qtedit4-qt671-x86_64.AppImage
 
       - name: windeployqt (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
