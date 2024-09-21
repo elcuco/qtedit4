@@ -144,19 +144,11 @@ jobs:
         with:
           path: "setup_script.iss"
           options: /O+
-      # - name: Upload setup (Windows)
-      #   if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: qtedit4-qt671-${{ env.version }}-x86_64.exe
-      #     path: dist/qtedit4-win64.exe
-
       - name: Rename and upload setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
           copy dist\qtedit4-win64.exe dist\qtedit4-qt671-${{ env.version }}-x86_64.exe
         shell: cmd
-
       - name: Upload renamed setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
@@ -164,6 +156,16 @@ jobs:
           name: qtedit4-qt671-${{ env.version }}-x86_64.exe
           path: dist/qtedit4-qt671-${{ env.version }}-x86_64.exe
 
+      - name: Generate Release Notes
+        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'clang' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          gh release view ${{ github.ref_name }} --json body > release-notes.txt || echo "No previous release found"
+      - name: Upload Release Notes
+        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'clang' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes.txt
+          path: release-notes.txt
 
   create-release:
     name: Draft GitHub Release
@@ -173,25 +175,19 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Download Release Notes
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes.txt
+          path: ./
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true
           path: ./artifacts
-      - name: Set version tag or commit SHA
-        id: version
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
-          else
-            echo "version=${GITHUB_SHA::7}" >> $GITHUB_ENV
-          fi
-        shell: bash
       - name: Create Draft Release
         run: |
-          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --generate-notes --draft
+          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --notes-file release-notes.txt --draft
       - name: Upload assets to release
         run: |
           gh release upload ${{ github.ref_name }} ./artifacts/*
