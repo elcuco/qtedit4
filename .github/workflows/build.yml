@@ -80,7 +80,7 @@ jobs:
           python-version: "3.11"
       - name: Install cmake-format
         run: pip3 install cmake-format
-      - name: Setup MSVC (optional)
+      - name: Setup MSVC (Windows)
         if: ${{ matrix.config.cxx == 'cl' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Confiure
@@ -111,7 +111,7 @@ jobs:
           fi
         shell: bash
 
-      - name: Create AppImage (linux)
+      - name: Create AppImage (Linux)
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run: |
           # Qt plugin does not bundle the needed plugins, do this manually
@@ -127,7 +127,7 @@ jobs:
           wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
           chmod +x linuxdeploy*.AppImage
           ./linuxdeploy-x86_64.AppImage --appdir "dist/${{ matrix.config.build_dir }}" --plugin qt --output appimage
-      - name: Upload AppImage (linux)
+      - name: Upload AppImage (Linux)
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         uses: actions/upload-artifact@v4
         with:
@@ -164,6 +164,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
+      - uses: actions/checkout@v4
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
