@@ -156,17 +156,6 @@ jobs:
           name: qtedit4-qt671-${{ env.version }}-x86_64.exe
           path: dist/qtedit4-qt671-${{ env.version }}-x86_64.exe
 
-      - name: Generate Release Notes
-        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'clang' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        run: |
-          gh release view ${{ github.ref_name }} --json body > release-notes.txt || echo "No previous release found"
-      - name: Upload Release Notes
-        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'clang' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-notes.txt
-          path: release-notes.txt
-
   create-release:
     name: Draft GitHub Release
     needs: build-cmake
@@ -175,11 +164,6 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
-      - name: Download Release Notes
-        uses: actions/download-artifact@v4
-        with:
-          name: release-notes.txt
-          path: ./
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -187,7 +171,7 @@ jobs:
           path: ./artifacts
       - name: Create Draft Release
         run: |
-          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --notes-file release-notes.txt --draft
+          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --generate-notes --draft
       - name: Upload assets to release
         run: |
           gh release upload ${{ github.ref_name }} ./artifacts/*
