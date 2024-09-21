@@ -154,7 +154,7 @@ jobs:
       - name: Rename and upload setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         run: |
-          copy dist/qtedit4-win64.exe dist/qtedit4-qt671-${{ env.version }}-x86_64.exe
+          copy dist\qtedit4-win64.exe dist\qtedit4-qt671-${{ env.version }}-x86_64.exe
         shell: cmd
 
       - name: Upload renamed setup (Windows)
