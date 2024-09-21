@@ -195,10 +195,10 @@ jobs:
       - name: Create Draft Release
         run: |
           gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --generate-notes --draft
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./artifacts
+      # - name: Download all artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     path: ./artifacts
       - name: Upload assets to release
         run: |
           gh release upload ${{ github.ref_name }} ./artifacts/*
