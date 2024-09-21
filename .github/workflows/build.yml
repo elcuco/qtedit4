@@ -5,7 +5,7 @@ on:
       - main
       - github-actions
     tags:
-      - 'v*.*.*'  # Trigger on tags that follow semantic versioning (e.g., v1.0.0)
+      - 'v*'
   pull_request:
     branches:
       - main
@@ -101,6 +101,16 @@ jobs:
         run: |
           cmake --install "build/${{ matrix.config.build_dir }}" --prefix="dist/${{ matrix.config.build_dir }}/usr"
 
+      - name: Set version tag or commit SHA
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "version=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          fi
+        shell: bash
+
       - name: Create AppImage
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run: |
@@ -122,7 +132,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: qtedit4-qt671-x86_64.AppImage
-          path: build/qtedit4-qt671-x86_64.AppImage
+          path: build/qtedit4-qt671-${{ env.version }}-x86_64.AppImage
 
       - name: windeployqt (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
@@ -134,108 +144,45 @@ jobs:
         with:
           path: "setup_script.iss"
           options: /O+
-
-
-      - name: Install WiX Toolset
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run: |
-          choco install wixtoolset -y
-          dotnet tool install --global wix
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-          echo "C:\Program Files (x86)\WiX Toolset v3.11\bin" >> $GITHUB_PATH
-
-      - name: Generate file lists
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run: |
-          heat dir "${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin" -cg DLLFiles -gg -srd -sfrag -out DLLFiles.wxs
-          heat dir "${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin/generic" -cg GenericDLLFiles -gg -srd -sfrag -out GenericDLLFiles.wxs
-          heat dir "${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze" -cg IconFiles -gg -srd -sfrag -out IconFiles.wxs
-        shell: cmd
-      - name: Update namespaces in generated .wxs files
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run: |
-          (Get-Content DLLFiles.wxs).replace('http://schemas.microsoft.com/wix/2006/wi', 'http://wixtoolset.org/schemas/v4/wxs') | Set-Content DLLFiles.wxs
-          (Get-Content GenericDLLFiles.wxs).replace('http://schemas.microsoft.com/wix/2006/wi', 'http://wixtoolset.org/schemas/v4/wxs') | Set-Content GenericDLLFiles.wxs
-          (Get-Content IconFiles.wxs).replace('http://schemas.microsoft.com/wix/2006/wi', 'http://wixtoolset.org/schemas/v4/wxs') | Set-Content IconFiles.wxs
-        shell: pwsh
-      - name: Build MSI
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        run: |
-          wix build qtedit4.wxs DLLFiles.wxs GenericDLLFiles.wxs IconFiles.wxs -out dist/qtedit4.msi -d DLLFiles="${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin" -d GenericDLLFiles="${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/bin/generic" -d IconFiles="${{ github.workspace }}/dist/${{ matrix.config.build_dir }}/usr/share/icons/breeze"
-        shell: cmd
-
-      - name: Upload MSI (Windows)
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        uses: actions/upload-artifact@v4
-        with:
-          name: qtedit4-qt671-x86_64.msi
-          path: dist/qtedit4.msi
-      - name: Upload Release Asset (Windows MSI)
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/qtedit4-qt671-x86_64.msi/qtedit4.msi
-          asset_name: qtedit4-qt671-x86_64.msi
-          asset_content_type: application/octet-stream
-
       - name: Upload setup
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
         with:
-          name: qtedit4-qt671-x86_64.exe
+          name: qtedit4-qt671-${{ env.version }}-x86_64.exe
           path: dist/qtedit4-win64.exe
-      - name: Upload MSI (Windows MSI)
-        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/qtedit4.msi
-          asset_name: qtedit4-qt671-x86_64.msi
-          asset_content_type: application/octet-stream
 
   create-release:
+    name: Draft GitHub Release
     needs: build-cmake
     runs-on: ubuntu-latest
-    # if: startsWith(github.ref, 'refs/tags/v')  # Trigger only on tags
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/github-actions')
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}-${{ github.sha }}
-          release_name: Release ${{ github.ref }}-${{ github.sha }}
-          draft: true
-          prerelease: true
+      - name: Set version tag or commit SHA
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "version=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          fi
+        shell: bash
 
-      - name: Upload Release Asset (AppImage)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/qtedit4-qt671-x86_64.AppImage/qtedit4-qt671-x86_64.AppImage
-          asset_name: qtedit4-qt671-x86_64.AppImage
-          asset_content_type: application/x-executable
-
-      - name: Upload Release Asset (Windows Setup)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/qtedit4-qt671-x86_64.exe/qtedit4-win64.exe
-          asset_name: qtedit4-qt671-x86_64-setup.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+      - name: Create Draft Release
+        run: |
+          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --generate-notes --draft
+      - name: Upload Windows Installer
+        run: |
+          gh release upload ${{ github.ref_name }} qtedit4-qt671-${{ env.version }}-x86_64.exe
+      - name: Upload Linux  AppImage
+        run: |
+          gh release upload ${{ github.ref_name }} qtedit4-qt671-${{ env.version }}-x86_64.AppImage
