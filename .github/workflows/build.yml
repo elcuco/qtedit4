@@ -166,7 +166,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
             if-no-files-found: error
-            merge-multiple: true
       - name: Set version tag or commit SHA
         id: version
         run: |
