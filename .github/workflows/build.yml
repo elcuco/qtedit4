@@ -144,12 +144,27 @@ jobs:
         with:
           path: "setup_script.iss"
           options: /O+
-      - name: Upload setup (Windows)
+      # - name: Upload setup (Windows)
+      #   if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: qtedit4-qt671-${{ env.version }}-x86_64.exe
+      #     path: dist/qtedit4-win64.exe
+
+      - name: Rename and upload setup (Windows)
+        if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
+        run: |
+          New-Item -ItemType Directory -Path temp
+          Copy-Item dist/qtedit4-win64.exe temp/qtedit4-qt671-${{ env.version }}-x86_64.exe
+        shell: pwsh
+
+      - name: Upload renamed setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
         with:
           name: qtedit4-qt671-${{ env.version }}-x86_64.exe
-          path: dist/qtedit4-win64.exe
+          path: temp/qtedit4-qt671-${{ env.version }}-x86_64.exe
+
 
   create-release:
     name: Draft GitHub Release
