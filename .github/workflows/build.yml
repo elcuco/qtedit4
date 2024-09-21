@@ -111,7 +111,7 @@ jobs:
           fi
         shell: bash
 
-      - name: Create AppImage
+      - name: Create AppImage (linux)
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         run: |
           # Qt plugin does not bundle the needed plugins, do this manually
@@ -127,7 +127,7 @@ jobs:
           wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
           chmod +x linuxdeploy*.AppImage
           ./linuxdeploy-x86_64.AppImage --appdir "dist/${{ matrix.config.build_dir }}" --plugin qt --output appimage
-      - name: Upload AppImage
+      - name: Upload AppImage (linux)
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         uses: actions/upload-artifact@v4
         with:
@@ -144,7 +144,7 @@ jobs:
         with:
           path: "setup_script.iss"
           options: /O+
-      - name: Upload setup
+      - name: Upload setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v4
         with:
