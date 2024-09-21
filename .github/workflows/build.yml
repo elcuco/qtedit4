@@ -195,9 +195,9 @@ jobs:
       - name: Create Draft Release
         run: |
           gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --generate-notes --draft
-      - name: Upload Windows Installer
-        run: |
-          gh release upload ${{ github.ref_name }} qtedit4-qt671-${{ env.version }}-x86_64.exe
-      - name: Upload Linux  AppImage
-        run: |
-          gh release upload ${{ github.ref_name }} qtedit4-qt671-${{ env.version }}-x86_64.AppImage
+      # - name: Upload Windows Installer
+      #   run: |
+      #     gh release upload ${{ github.ref_name }} qtedit4-qt671-${{ env.version }}-x86_64.exe
+      # - name: Upload Linux  AppImage
+      #   run: |
+      #     gh release upload ${{ github.ref_name }} qtedit4-qt671-${{ env.version }}-x86_64.AppImage
