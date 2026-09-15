@@ -1,9 +1,9 @@
 [Desktop Entry]
 Exec=@CODEPOINTER_BINARY@ %f
-Comment=Text editor
+Comment=Text editor/IDE
 Type=Application
-Icon=@CODEPOINTER_ICON@
-Name=@CODEPOINTER_APP_NAME@
+Icon=org.codepointer.@CODEPOINTER_APP_NAME@
+Name=@CODEPOINTER_APP_NAME@ (Flatpack)
 StartupNotify=true
 Terminal=false
 Categories=Qt;TextEditor;Utility;

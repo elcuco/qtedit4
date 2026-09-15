@@ -14,10 +14,69 @@ on:
 
 env:
   APP_NAME: codepointer
+  APP_ID: org.codepointer.codepointer
+  MANIFEST: org.codepointerapp.codepointer.yml
+  RUNTIME_VERSION: '6.10'
 
 jobs:
+  version:
+    name: Compute version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+    steps:
+      - name: Set version tag or commit SHA
+        id: set-version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          fi
+
+  flatpak:
+    name: Build Flatpak (x86_64)
+    needs: version
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install flatpak and flatpak-builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Cache Flatpak runtime/SDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/flatpak
+          key: flatpak-kde-${{ env.RUNTIME_VERSION }}
+
+      - name: Install KDE runtime and SDK
+        run: |
+          flatpak install --user -y flathub \
+            org.kde.Platform//${{ env.RUNTIME_VERSION }} \
+            org.kde.Sdk//${{ env.RUNTIME_VERSION }}
+
+      - name: Build Flatpak
+        run: flatpak-builder --force-clean --repo=repo builddir ${{ env.MANIFEST }}
+
+      - name: Create Flatpak bundle
+        run: |
+          flatpak build-bundle repo \
+            ${{ env.APP_ID }}-${{ needs.version.outputs.version }}-x86_64.flatpak \
+            ${{ env.APP_ID }}
+
+      - name: Upload Flatpak bundle
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ env.APP_ID }}-${{ needs.version.outputs.version }}-x86_64.flatpak
+          path: ${{ env.APP_ID }}-${{ needs.version.outputs.version }}-x86_64.flatpak
+
   build-cmake:
     name: Build ${{ matrix.config.name }} Qt ${{ matrix.qt_version }}
+    needs: version
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -97,14 +156,6 @@ jobs:
         run: >
           cmake --install build/${{ matrix.config.build_dir }}
           --prefix dist/${{ matrix.config.build_dir }}/usr
-      - name: Set version tag or commit SHA
-        shell: bash
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            echo "version=${GITHUB_REF##refs/tags/}" >> $GITHUB_ENV
-          else
-            echo "version=${GITHUB_SHA::7}" >> $GITHUB_ENV
-          fi
 
       - name: Create TGZ archive (Linux)
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
@@ -112,9 +163,9 @@ jobs:
         run: |
           mkdir -p dist/${{ env.APP_NAME }}
           ln -s ../${{ matrix.config.build_dir }}/usr \
-            dist/${{ env.APP_NAME }}/${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-${{ env.version }}
+            dist/${{ env.APP_NAME }}/${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-${{ needs.version.outputs.version }}
           tar -czhf \
-            dist/${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-qt${{ matrix.qt_version }}-${{ env.version }}.tar.gz \
+            dist/${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-qt${{ matrix.qt_version }}-${{ needs.version.outputs.version }}.tar.gz \
             -C dist/${{ env.APP_NAME }} .
 
       - name: Create AppImage (Linux)
@@ -125,7 +176,7 @@ jobs:
           cp -av ${QT_ROOT_DIR}/plugins/iconengines/* dist/${{ matrix.config.build_dir }}/usr/plugins/iconengines/
           cp -av ${QT_ROOT_DIR}/plugins/platforms/libqwayland*.so dist/${{ matrix.config.build_dir }}/usr/plugins/platforms/
           export LD_LIBRARY_PATH=dist/${{ matrix.config.build_dir }}/usr/lib:$LD_LIBRARY_PATH
-          export OUTPUT=build/${{ env.APP_NAME }}-${{ env.version }}-x86_64.AppImage
+          export OUTPUT=build/${{ env.APP_NAME }}-${{ needs.version.outputs.version }}-x86_64.AppImage
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
@@ -138,15 +189,15 @@ jobs:
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: ${{ env.APP_NAME }}-${{ env.version }}-x86_64.AppImage
-          path: build/${{ env.APP_NAME }}-${{ env.version }}-x86_64.AppImage
+          name: ${{ env.APP_NAME }}-${{ needs.version.outputs.version }}-x86_64.AppImage
+          path: build/${{ env.APP_NAME }}-${{ needs.version.outputs.version }}-x86_64.AppImage
 
       - name: Upload TGZ archive (Linux)
         if: matrix.config.os == 'ubuntu-22.04' && matrix.config.cc == 'gcc'
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: ${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-qt${{ matrix.qt_version }}-${{ env.version }}.tar.gz
-          path: dist/${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-qt${{ matrix.qt_version }}-${{ env.version }}.tar.gz
+          name: ${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-qt${{ matrix.qt_version }}-${{ needs.version.outputs.version }}.tar.gz
+          path: dist/${{ env.APP_NAME }}-${{ matrix.config.build_dir }}-qt${{ matrix.qt_version }}-${{ needs.version.outputs.version }}.tar.gz
 
       - name: windeployqt (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
@@ -165,18 +216,18 @@ jobs:
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         shell: cmd
         run: |
-          copy dist\${{ env.APP_NAME }}-win64.exe dist\${{ env.APP_NAME }}-${{ env.version }}-x86_64.exe
+          copy dist\${{ env.APP_NAME }}-win64.exe dist\${{ env.APP_NAME }}-${{ needs.version.outputs.version }}-x86_64.exe
 
       - name: Upload renamed setup (Windows)
         if: matrix.config.os == 'windows-2022' && matrix.config.cc == 'cl'
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: ${{ env.APP_NAME }}-${{ env.version }}-x86_64.exe
-          path: dist/${{ env.APP_NAME }}-${{ env.version }}-x86_64.exe
+          name: ${{ env.APP_NAME }}-${{ needs.version.outputs.version }}-x86_64.exe
+          path: dist/${{ env.APP_NAME }}-${{ needs.version.outputs.version }}-x86_64.exe
 
   create-release:
     name: Draft GitHub Release
-    needs: build-cmake
+    needs: [build-cmake, flatpak]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     env:
@@ -184,7 +235,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7.0.1
         with:
           merge-multiple: true
           path: ./artifacts
