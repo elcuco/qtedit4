@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project (codepointer)
 
+option(CODEPOINTER_BUNDLE_ICON_THEME "Should build use the icon theme, usually on" ON)
 set(BUILD_VERSION "DEV" CACHE STRING "Build version (DEV, CE, OFFICIAL)")
 set_property(CACHE BUILD_VERSION PROPERTY STRINGS DEV CE OFFICIAL)
 
@@ -62,7 +63,7 @@ else()
     include(cmake/CPM.cmake)
     include(cmake/icons-breeze.cmake)
 
-    CPMAddPackage("gh:diegoiast/qutepart-cpp#ce6c1b2540cf5d5332a86e2154305f8bd861f078")
+    CPMAddPackage("gh:diegoiast/qutepart-cpp#7bcc2c14f97356f9d9d81fc2559304c5e2e59959")
     CPMAddPackage("gh:diegoiast/qmdilib#55fdb780262e520b1d7f87382681f13f673b11b7")
     CPMAddPackage("gh:diegoiast/command-palette-widget#dc9e7ff8b632de9b7e49c25b5b95dc8693937300")
     CPMAddPackage("gh:diegoiast/KodoTerm#9d016815076a451ad639fa021d46602585e91247")
